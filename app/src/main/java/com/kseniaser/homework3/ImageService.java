@@ -27,9 +27,9 @@ public class ImageService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         try {
-            URL url = new URL("https://pp.vk.me/c604522/v604522496/37f0f/rCLMtE5ZV6E.jpg");
+            URL url = new URL(getString(R.string.image_url));
             Bitmap bitmap = BitmapFactory.decodeStream(url.openStream());
-            FileOutputStream fileStream = openFileOutput("image.png", MODE_PRIVATE);
+            FileOutputStream fileStream = openFileOutput(getString(R.string.image_filename), MODE_PRIVATE);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileStream);
             sendBroadcast(new Intent(IMAGE_RECEIVED));
         } catch (IOException e) {

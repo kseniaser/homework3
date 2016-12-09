@@ -12,7 +12,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements ImageViewer {
 
@@ -30,6 +31,11 @@ public class MainActivity extends AppCompatActivity implements ImageViewer {
 
         showImage();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -40,12 +46,12 @@ public class MainActivity extends AppCompatActivity implements ImageViewer {
     }
 
     private void showImage() {
-        new LoadImageAsyncTask(this).execute();
+        new LoadLocalImageAsyncTask(this).execute();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
         unregisterReceiver(receiver);
     }
 
@@ -62,17 +68,18 @@ public class MainActivity extends AppCompatActivity implements ImageViewer {
 
     }
 
-    private class LoadImageAsyncTask extends AsyncTask<Void, Void, Bitmap> {
+    private class LoadLocalImageAsyncTask extends AsyncTask<Void, Void, Bitmap> {
 
         private ImageViewer mViewer;
 
-        LoadImageAsyncTask(ImageViewer viewer) {
+        LoadLocalImageAsyncTask(ImageViewer viewer) {
             this.mViewer = viewer;
         }
 
         @Override
         protected Bitmap doInBackground(Void... voids) {
-            return BitmapFactory.decodeFile(getFilesDir().getPath() + "/image.png");
+            File imageFile = new File(getFilesDir(), getString(R.string.image_filename));
+            return BitmapFactory.decodeFile(imageFile.getPath());
         }
 
         @Override
